@@ -11,7 +11,7 @@ La empresa JFC requiere una plataforma de e-commerce lista para producción, cap
 
 ## Diagrama de Arquitectura
 
-*(Adjuntar imagen del diagrama)*
+![Diagrama de Arquitectura](./arquitectura.png)
 
 ---
 
