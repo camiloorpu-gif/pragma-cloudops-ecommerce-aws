@@ -11,7 +11,7 @@ terraform {
   # Desactivé el remote state temporalmente para que puedan probar el código 
   # sin que les lance un "Access Denied" por los permisos del bucket. 
   # Para prod sí o sí va con S3.
-   /*
+  /*
   backend "s3" {
     bucket         = "ecommerce-jfc-terraform-state" 
     key            = "ecommerce/terraform.tfstate"

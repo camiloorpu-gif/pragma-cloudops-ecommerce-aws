@@ -7,7 +7,7 @@ resource "aws_vpc" "main_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = { Name = "ecommerce-vpc" }
+  tags                 = { Name = "ecommerce-vpc" }
 }
 
 # 2. Subredes Públicas (ALB y NAT Gateway)
@@ -16,7 +16,7 @@ resource "aws_subnet" "public_subnet_1" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
-  tags = { Name = "ecommerce-public-1" }
+  tags                    = { Name = "ecommerce-public-1" }
 }
 
 resource "aws_subnet" "public_subnet_2" {
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnet_2" {
   cidr_block              = "10.0.2.0/24"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
-  tags = { Name = "ecommerce-public-2" }
+  tags                    = { Name = "ecommerce-public-2" }
 }
 
 # 3. Subredes Privadas - Cómputo (Fargate)
@@ -32,14 +32,14 @@ resource "aws_subnet" "private_compute_1" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.3.0/24"
   availability_zone = "us-east-1a"
-  tags = { Name = "ecommerce-private-compute-1" }
+  tags              = { Name = "ecommerce-private-compute-1" }
 }
 
 resource "aws_subnet" "private_compute_2" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.4.0/24"
   availability_zone = "us-east-1b"
-  tags = { Name = "ecommerce-private-compute-2" }
+  tags              = { Name = "ecommerce-private-compute-2" }
 }
 
 # 4. Subredes Privadas - Datos (Aurora + ElastiCache)
@@ -47,26 +47,26 @@ resource "aws_subnet" "private_data_1" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.5.0/24"
   availability_zone = "us-east-1a"
-  tags = { Name = "ecommerce-private-data-1" }
+  tags              = { Name = "ecommerce-private-data-1" }
 }
 
 resource "aws_subnet" "private_data_2" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.6.0/24"
   availability_zone = "us-east-1b"
-  tags = { Name = "ecommerce-private-data-2" }
+  tags              = { Name = "ecommerce-private-data-2" }
 }
 
 # 5. Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main_vpc.id
-  tags = { Name = "ecommerce-igw" }
+  tags   = { Name = "ecommerce-igw" }
 }
 
 # 6. NAT Gateway
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
-  tags = { Name = "ecommerce-nat-eip" }
+  tags   = { Name = "ecommerce-nat-eip" }
 }
 
 resource "aws_nat_gateway" "nat_gw" {

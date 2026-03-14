@@ -6,7 +6,7 @@
 resource "aws_s3_bucket" "frontend_bucket" {
   bucket        = "ecommerce-jfc-frontend-${random_string.suffix.result}"
   force_destroy = true
-  tags = { Name = "ecommerce-frontend-bucket" }
+  tags          = { Name = "ecommerce-frontend-bucket" }
 }
 
 # Generar un sufijo aleatorio para que el nombre del bucket sea único
