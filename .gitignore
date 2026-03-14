@@ -1,2 +1,5 @@
+#Ignorarr la carpeta .terraform, es muy pesada, aprovechar el espacio
 .terraform/
 .terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
