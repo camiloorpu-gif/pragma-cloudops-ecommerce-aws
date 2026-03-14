@@ -5,15 +5,26 @@ terraform {
       version = "~> 5.0"
     }
   }
-  # Versionn terraform 
   required_version = ">= 1.2.0"
+
+  # NOTA 
+  # Desactivé el remote state temporalmente para que puedan probar el código 
+  # sin que les lance un "Access Denied" por los permisos del bucket. 
+  # Para prod sí o sí va con S3.
+   /*
+  backend "s3" {
+    bucket         = "ecommerce-jfc-terraform-state" 
+    key            = "ecommerce/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
+  */
 }
 
-# Configuración del proveedor de AWS
+# Provider principal
 provider "aws" {
   region = "us-east-1"
-  
-  # Estas etiquetas se aplicarán automáticamente a todo lo que creemos
+
   default_tags {
     tags = {
       Project     = "Pragma-Ecommerce-JFC"
