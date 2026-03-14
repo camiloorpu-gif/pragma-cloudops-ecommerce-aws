@@ -21,7 +21,7 @@ La empresa JFC requiere una plataforma de e-commerce lista para producción, cap
 |---|---|---|
 | Red | VPC Multi-AZ, Subredes, NAT Gateway | Aislamiento y alta disponibilidad |
 | Frontend | S3 + CloudFront | Serverless, caché global, costo mínimo |
-| Seguridad perimetral | WAF, Route 53 | Protección contra ataques |
+| Seguridad perimetral | WAF | Protección contra ataques web |
 | Backend | ECS Fargate + ALB + Auto Scaling | Contenedores serverless, escalabilidad automática |
 | Imágenes Docker | Amazon ECR | Repositorio privado con escaneo de vulnerabilidades |
 | Base de datos | Aurora Serverless v2 (PostgreSQL) | ACID, escala automática por demanda |
@@ -31,17 +31,31 @@ La empresa JFC requiere una plataforma de e-commerce lista para producción, cap
 
 ---
 
+## Estructura del Repositorio
+
+```
+.
+├── providers.tf     # Configuración del proveedor AWS
+├── network.tf       # VPC, subredes, NAT Gateway, Security Groups
+├── frontend.tf      # S3, CloudFront, WAF
+├── compute.tf       # ECS Fargate, ALB, Auto Scaling, ECR
+├── data.tf          # Aurora, ElastiCache, Secrets Manager
+├── monitoring.tf    # CloudWatch Alarms, Dashboard, SNS
+└── README.md
+```
+
+---
+
 ## Flujo de Trafico
 
 ```
 Usuario
-  └─► Route 53 (DNS)
-        └─► CloudFront (CDN + WAF)
-              ├─► S3 (contenido estatico: HTML, CSS, JS)
-              └─► ALB (peticiones dinamicas)
-                    └─► ECS Fargate (microservicios)
-                          ├─► Aurora Serverless v2 (escrituras/lecturas)
-                          └─► ElastiCache Redis (lecturas en cache)
+  └─► CloudFront (CDN + WAF)
+        ├─► S3 (contenido estatico: HTML, CSS, JS)
+        └─► ALB (peticiones dinamicas)
+              └─► ECS Fargate (microservicios)
+                    ├─► Aurora Serverless v2 (escrituras/lecturas)
+                    └─► ElastiCache Redis (lecturas en cache)
 ```
 
 ---
@@ -50,7 +64,7 @@ Usuario
 
 La red esta dividida en tres niveles de subredes: publicas para el ALB y NAT Gateway, privadas de computo para Fargate, y privadas de datos para Aurora y Redis. Nada de la capa de datos es accesible desde internet.
 
-El WAF acoplado a CloudFront bloquea inyecciones SQL, XSS y ataques DDoS antes de que el trafico llegue a la infraestructura interna.
+El WAF acoplado a CloudFront bloquea inyecciones SQL, XSS y ataques DDoS antes de que el trafico llegue a la infraestructura interna. Utiliza el conjunto de reglas administradas de AWS que cubre las 10 amenazas web mas comunes.
 
 Las credenciales de Aurora son generadas por Terraform con random_password y almacenadas en AWS Secrets Manager. Los contenedores las leen en tiempo de ejecucion. Ninguna contrasena existe en el codigo fuente.
 
@@ -82,6 +96,9 @@ Decision de costo. Un segundo NAT Gateway agregaria resiliencia ante la falla de
 **Fargate sobre Lambda**
 Lambda tiene un limite de 15 minutos por ejecucion. Procesos como sincronizacion de inventario o generacion de reportes pueden superar ese limite. Fargate no tiene esta restriccion.
 
+**Sin Route 53**
+Se asume que el dominio y la gestion de DNS ya existen fuera de esta infraestructura. CloudFront provee su propio dominio por defecto para acceder a la aplicacion.
+
 ---
 
 ## Estimacion de Costos Mensual
@@ -102,3 +119,20 @@ Lambda tiene un limite de 15 minutos por ejecucion. Procesos como sincronizacion
 
 Fargate y Aurora escalan segun consumo real. En horas de baja demanda el costo puede reducirse significativamente.
 
+------
+
+
+
+---
+
+## Pipeline CI/CD y Estrategia de Despliegue
+
+Se implementó un flujo de Integración Continua (CI) utilizando **GitHub Actions** (`.github/workflows/terraform.yml`). Este pipeline se dispara automáticamente en cada `push` o `pull_request` hacia la rama `main` para garantizar la calidad del código.
+
+**Fases del Pipeline actual:**
+1. **Terraform Fmt:** Verifica que el código cumpla con los estándares de estilo.
+2. **Terraform Init:** Descarga los providers necesarios (`aws`, `random`) y prepara el entorno.
+3. **Terraform Validate:** Realiza un análisis estático para asegurar que la sintaxis y las referencias entre recursos son correctas.
+
+**Estrategia para Producción (CD):**
+Por motivos de seguridad y mejores prácticas, este repositorio público no ejecuta los comandos `terraform plan` ni `terraform apply`. En un entorno real corporativo, el pipeline se extendería configurando **OpenID Connect (OIDC)** entre GitHub y AWS. Esto permitiría al runner de GitHub asumir un rol temporal de IAM con permisos específicos de despliegue, eliminando por completo la necesidad de almacenar llaves estáticas (`AWS_ACCESS_KEY_ID`) como secretos.
