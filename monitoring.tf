@@ -1,6 +1,6 @@
-# ============================================================
+
 # monitoring.tf - Observabilidad para E-commerce JFC
-# ============================================================
+
 
 # 1. SNS - Notificaciones de alarmas
 resource "aws_sns_topic" "alerts" {
@@ -14,7 +14,7 @@ resource "aws_sns_topic_subscription" "alerts_email" {
   endpoint  = "devops@ecommerce-jfc.com"
 }
 
-# 2. Alarma: CPU alta en Fargate
+# 2. Alarma --> CPU muyalta en Fargate
 resource "aws_cloudwatch_metric_alarm" "ecs_cpu_high" {
   alarm_name          = "ecommerce-ecs-cpu-high"
   comparison_operator = "GreaterThanThreshold"

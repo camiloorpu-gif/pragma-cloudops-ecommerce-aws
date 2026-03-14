@@ -1,6 +1,6 @@
-# ============================================================
-# compute.tf - ECS Fargate + ALB para E-commerce JFC
-# ============================================================
+
+# compute.tf --------< ECS Fargate + ALB para E-commerce JFC-------------->
+
 
 # 1. ECR - Repositorio de imágenes Docker
 resource "aws_ecr_repository" "ecommerce_app" {

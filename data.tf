@@ -1,6 +1,6 @@
-# ============================================================
-# data.tf - Base de datos y caché para E-commerce JFC
-# ============================================================
+
+# data.tf ---- Base de datos y caché para E-commerce JFC----
+
 
 # 1. Contraseña segura generada por Terraform
 resource "random_password" "db_password" {
@@ -30,7 +30,7 @@ resource "aws_db_subnet_group" "aurora_subnet_group" {
   tags = { Name = "ecommerce-aurora-subnet-group" }
 }
 
-# 4. Cluster Aurora Serverless v2
+# 4. Cluster Aurora Serverless ---v2--
 resource "aws_rds_cluster" "aurora_cluster" {
   cluster_identifier     = "ecommerce-aurora-cluster"
   engine                 = "aurora-postgresql"
@@ -51,7 +51,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   tags = { Name = "ecommerce-aurora-cluster" }
 }
 
-# 5. Instancia Aurora Serverless v2
+# 5. Instancia Aurora Serverless ---v2--
 resource "aws_rds_cluster_instance" "aurora_instance" {
   cluster_identifier = aws_rds_cluster.aurora_cluster.id
   instance_class     = "db.serverless"

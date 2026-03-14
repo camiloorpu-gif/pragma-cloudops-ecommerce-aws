@@ -28,6 +28,6 @@ jobs:
 
       - name: Simulación de Seguridad para Plan/Apply
         run: |
-          echo "✅ CI completado con éxito: El código está formateado y la sintaxis es válida."
-          echo "🔒 SEGURIDAD: Los pasos de 'terraform plan' y 'terraform apply' se omiten en este pipeline público."
+          echo "CI completado con éxito: El código está formateado y la sintaxis es válida."
+          echo "SEGURIDAD: Los pasos de 'terraform plan' y 'terraform apply' se omiten en este pipeline público."
           echo "En un entorno corporativo de producción, estos pasos se ejecutarían asumiendo un rol de IAM mediante autenticación OIDC (OpenID Connect) con AWS, evitando el uso de credenciales de larga duración."

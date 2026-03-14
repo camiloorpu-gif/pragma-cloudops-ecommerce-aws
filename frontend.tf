@@ -1,6 +1,6 @@
-# ============================================================
-# frontend.tf - S3, CloudFront y WAF para E-commerce JFC
-# ============================================================
+
+# frontend.tf - ----S3, CloudFront y WAF para E-commerce JFC----
+
 
 # 1. S3 Bucket para alojar el Frontend Estático
 resource "aws_s3_bucket" "frontend_bucket" {
@@ -16,7 +16,8 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
-# 2. Origin Access Control (OAC) - Seguridad: Solo CloudFront puede leer el S3
+# 2. Origin Access Control (OAC) sirvepara --->
+# Seguridad: Solo CloudFront puede leer el S3
 resource "aws_cloudfront_origin_access_control" "frontend_oac" {
   name                              = "ecommerce-frontend-oac"
   description                       = "OAC para el bucket de frontend"
@@ -44,8 +45,7 @@ resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
   })
 }
 
-# 3. AWS WAF - Protección contra inyecciones SQL y ataques comunes
-# Importante: el WAF para CloudFront debe estar en us-east-1 obligatoriamente
+# 3. AWS WAF - Protección 
 resource "aws_wafv2_web_acl" "frontend_waf" {
   name        = "ecommerce-frontend-waf"
   description = "WAF para proteger CloudFront"
@@ -81,7 +81,7 @@ resource "aws_wafv2_web_acl" "frontend_waf" {
   }
 }
 
-# 4. CloudFront Distribution - Sistema de Cacheo
+# 4. CloudFront Distribution --< Sistema de Cacheo
 resource "aws_cloudfront_distribution" "frontend_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
